@@ -1,11 +1,6 @@
 function fuel(mass)
 	result = mass ÷ 3 - 2
-
-	if result <= 0
-		return 0
-	end
-
-	return result + fuel(result)
+	result <= 0 ? 0 : result + fuel(result)
 end
 
 function main()
