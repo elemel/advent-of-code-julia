@@ -11,7 +11,10 @@ const HALT = 99
 end # module Opcodes
 
 mutable struct Process
+    # Zero-based indexing
     memory::OffsetArray{Int}
+
+    # Instruction pointer
     ip::Int
 
     function Process(program::Array{Int}; ip::Int=0)
@@ -34,6 +37,7 @@ function add(process)
 
     process.memory[c] = process.memory[a] + process.memory[b]
     process.ip += 4
+    nothing
 end
 
 function multiply(process)
@@ -43,6 +47,7 @@ function multiply(process)
 
     process.memory[c] = process.memory[a] * process.memory[b]
     process.ip += 4
+    nothing
 end
 
 end # module Operations
@@ -60,7 +65,7 @@ function step(process)
     opcode = process.memory[process.ip]
     operation = OPCODE_TO_OPERATION[opcode]
     operation(process)
-    return true
+    true
 end
 
 function run(process)
