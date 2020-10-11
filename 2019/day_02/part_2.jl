@@ -1,4 +1,4 @@
-include("../../Intcode.jl")
+include("../Intcode.jl")
 
 function main()
     program = parse.(Int, split(read(stdin, String), ","))
