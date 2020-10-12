@@ -5,14 +5,15 @@ function main()
 
     for noun = 0:99
         for verb = 0:99
-            process = Intcode.Process(program)
+            machine = Intcode.Machine(program)
 
-            process.memory[1] = noun
-            process.memory[2] = verb
+            machine.memory[1] = noun
+            machine.memory[2] = verb
 
-            Intcode.run(process)
+            Intcode.run!(machine)
+            @assert Intcode.is_halted(machine)
 
-            if process.memory[0] == 19690720
+            if machine.memory[0] == 19690720
                 println(100 * noun + verb)
                 return
             end
