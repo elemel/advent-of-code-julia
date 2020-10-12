@@ -1,5 +1,5 @@
 function fuel(mass)
-    result = mass ÷ 3 - 2
+    result = fld(mass, 3) - 2
     result <= 0 ? 0 : result + fuel(result)
 end
 
