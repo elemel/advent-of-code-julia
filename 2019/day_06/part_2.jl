@@ -34,7 +34,8 @@ function main()
         end
 
         if haskey(child_to_parent, object_name)
-            push!(queue, (child_to_parent[object_name], transfer_count + 1))
+            parent_name = child_to_parent[object_name]
+            push!(queue, (parent_name, transfer_count + 1))
         end
     end
 end

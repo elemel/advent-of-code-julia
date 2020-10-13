@@ -13,7 +13,6 @@ function get_total_orbit_count(object_name, orbit_count, parent_to_children)
 end
 
 function main()
-    parents = Dict()
     parent_to_children = DefaultDict(Set)
 
     for line in readlines(stdin)
