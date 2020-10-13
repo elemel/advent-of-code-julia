@@ -26,9 +26,7 @@ function render_path(path)
             x = x + dx
             y = y + dy
 
-            if !in((x, y), visited)
-                push!(visited, (x, y))
-            end
+            push!(visited, (x, y))
         end
     end
 
