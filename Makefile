@@ -1,12 +1,17 @@
-ANSWERS := $(wildcard */*/answer_*.txt)
-DAYS := $(wildcard */day_*)
+PARTS := $(wildcard */*/part_*.jl)
+ANSWERS_1 := $(patsubst %/part_1.jl,%/answer_1.txt,${PARTS})
+ANSWERS := $(patsubst %/part_2.jl,%/answer_2.txt,${ANSWERS_1})
 
-all: ${DAYS}
+all: ${ANSWERS}
 
-${DAYS}:
-	${MAKE} --directory=$@ --makefile=${PWD}/day.mak
+2019/%/answer_1.txt: 2019/%/part_1.jl 2019/%/input.txt 2019/Intcode.jl
+	julia 2019/$*/part_1.jl < 2019/$*/input.txt > $@
+
+2019/%/answer_2.txt: 2019/%/part_2.jl 2019/%/input.txt 2019/Intcode.jl
+	julia 2019/$*/part_2.jl < 2019/$*/input.txt > $@
 
 clean:
-	rm ${ANSWERS}
+	rm -f ${ANSWERS}
 
-.PHONY: all clean ${DAYS}
+# .DELETE_ON_ERROR:
+.PHONY: all clean
