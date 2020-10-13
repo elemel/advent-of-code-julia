@@ -31,7 +31,7 @@ const IMMEDIATE = 1
 
 end # module ParameterModes
 
-mutable struct Machine
+mutable struct Computer
     instruction_pointer::Int
 
     # Zero-based indexing
@@ -40,58 +40,58 @@ mutable struct Machine
     input_queue::Deque{Int}
     output_queue::Deque{Int}
 
-    function Machine(
+    function Computer(
         program=[];
         instruction_pointer=0,
         input_values=[],
         output_values=[])
 
-        machine = new()
-        machine.instruction_pointer = instruction_pointer
-        machine.memory = OffsetArray(Array{Int}(program), -1)
+        computer = new()
+        computer.instruction_pointer = instruction_pointer
+        computer.memory = OffsetArray(Array{Int}(program), -1)
 
-        machine.input_queue = Deque{Int}()
-        machine.output_queue = Deque{Int}()
+        computer.input_queue = Deque{Int}()
+        computer.output_queue = Deque{Int}()
 
-        foreach(value -> push!(machine.input_queue, value), input_values)
-        foreach(value -> push!(machine.output_queue, value), output_values)
+        foreach(value -> push!(computer.input_queue, value), input_values)
+        foreach(value -> push!(computer.output_queue, value), output_values)
 
-        machine
+        computer
     end
 end
 
-function is_halted(machine::Machine)::Bool
-    machine.memory[machine.instruction_pointer] == Opcodes.HALT
+function is_halted(computer::Computer)::Bool
+    computer.memory[computer.instruction_pointer] == Opcodes.HALT
 end
 
-function is_blocked(machine::Machine)::Bool
-    machine.memory[machine.instruction_pointer] == Opcodes.INPUT &&
-        isempty(machine.input_queue)
+function is_blocked(computer::Computer)::Bool
+    computer.memory[computer.instruction_pointer] == Opcodes.INPUT &&
+        isempty(computer.input_queue)
 end
 
-function load(machine::Machine, parameter::Int)::Int
-    modes = machine.memory[machine.instruction_pointer]
+function load(computer::Computer, parameter::Int)::Int
+    modes = computer.memory[computer.instruction_pointer]
     divisor = 10 ^ (parameter + 1)
     mode = mod(fld(modes, divisor), 10)
 
     if mode == ParameterModes.POSITION
-        address = machine.memory[machine.instruction_pointer + parameter]
-        machine.memory[address]
+        address = computer.memory[computer.instruction_pointer + parameter]
+        computer.memory[address]
     elseif mode == ParameterModes.IMMEDIATE
-        machine.memory[machine.instruction_pointer + parameter]
+        computer.memory[computer.instruction_pointer + parameter]
     else
         throw(ParameterModeError())
     end
 end
 
-function store!(machine::Machine, parameter::Int, value::Int)::Nothing
-    modes = machine.memory[machine.instruction_pointer]
+function store!(computer::Computer, parameter::Int, value::Int)::Nothing
+    modes = computer.memory[computer.instruction_pointer]
     divisor = 10 ^ (parameter + 1)
     mode = mod(fld(modes, divisor), 10)
 
     if mode == ParameterModes.POSITION
-        address = machine.memory[machine.instruction_pointer + parameter]
-        machine.memory[address] = value
+        address = computer.memory[computer.instruction_pointer + parameter]
+        computer.memory[address] = value
     else
         throw(ParameterModeError())
     end
@@ -103,102 +103,102 @@ module Operations
 
 import ..BlockError
 import ..HaltError
-import ..Machine
+import ..Computer
 
 import ..load
 import ..store!
 
-function add!(machine::Machine)::Nothing
-    left = load(machine, 1)
-    right = load(machine, 2)
+function add!(computer::Computer)::Nothing
+    left = load(computer, 1)
+    right = load(computer, 2)
 
     result = left + right
-    store!(machine, 3, result)
+    store!(computer, 3, result)
 
-    machine.instruction_pointer += 4
+    computer.instruction_pointer += 4
     nothing
 end
 
-function equals!(machine::Machine)::Nothing
-    left = load(machine, 1)
-    right = load(machine, 2)
+function equals!(computer::Computer)::Nothing
+    left = load(computer, 1)
+    right = load(computer, 2)
 
     result = Int(left == right)
-    store!(machine, 3, result)
+    store!(computer, 3, result)
 
-    machine.instruction_pointer += 4
+    computer.instruction_pointer += 4
     nothing
 end
 
-function halt(machine::Machine)::Nothing
+function halt(computer::Computer)::Nothing
     throw(HaltError())
 end
 
-function input!(machine::Machine)::Nothing
-    if isempty(machine.input_queue)
+function input!(computer::Computer)::Nothing
+    if isempty(computer.input_queue)
         throw(BlockError())
     end
 
-    value = popfirst!(machine.input_queue)
-    store!(machine, 1, value)
+    value = popfirst!(computer.input_queue)
+    store!(computer, 1, value)
 
-    machine.instruction_pointer += 2
+    computer.instruction_pointer += 2
     nothing
 end
 
-function jump_if_false!(machine::Machine)::Nothing
-    condition = load(machine, 1)
-    target = load(machine, 2)
+function jump_if_false!(computer::Computer)::Nothing
+    condition = load(computer, 1)
+    target = load(computer, 2)
 
     if condition == 0
-        machine.instruction_pointer = target
+        computer.instruction_pointer = target
     else
-        machine.instruction_pointer += 3
+        computer.instruction_pointer += 3
     end
 
     nothing
 end
 
-function jump_if_true!(machine::Machine)::Nothing
-    condition = load(machine, 1)
-    target = load(machine, 2)
+function jump_if_true!(computer::Computer)::Nothing
+    condition = load(computer, 1)
+    target = load(computer, 2)
 
     if condition != 0
-        machine.instruction_pointer = target
+        computer.instruction_pointer = target
     else
-        machine.instruction_pointer += 3
+        computer.instruction_pointer += 3
     end
 
     nothing
 end
 
-function less_than!(machine::Machine)::Nothing
-    left = load(machine, 1)
-    right = load(machine, 2)
+function less_than!(computer::Computer)::Nothing
+    left = load(computer, 1)
+    right = load(computer, 2)
 
     result = Int(left < right)
-    store!(machine, 3, result)
+    store!(computer, 3, result)
 
-    machine.instruction_pointer += 4
+    computer.instruction_pointer += 4
     nothing
 end
 
-function multiply!(machine::Machine)::Nothing
-    left = load(machine, 1)
-    right = load(machine, 2)
+function multiply!(computer::Computer)::Nothing
+    left = load(computer, 1)
+    right = load(computer, 2)
 
     result = left * right
-    store!(machine, 3, result)
+    store!(computer, 3, result)
 
-    machine.instruction_pointer += 4
+    computer.instruction_pointer += 4
     nothing
 end
 
-function output!(machine::Machine)::Nothing
-    value = load(machine, 1)
-    push!(machine.output_queue, value)
+function output!(computer::Computer)::Nothing
+    value = load(computer, 1)
+    push!(computer.output_queue, value)
 
-    machine.instruction_pointer += 2
+    computer.instruction_pointer += 2
     nothing
 end
 
@@ -216,16 +216,16 @@ const OPCODE_TO_OPERATION = Dict(
     Opcodes.OUTPUT => Operations.output!,
 )
 
-function step!(machine::Machine)::Nothing
-    opcode = mod(machine.memory[machine.instruction_pointer], 100)
+function step!(computer::Computer)::Nothing
+    opcode = mod(computer.memory[computer.instruction_pointer], 100)
     operation = OPCODE_TO_OPERATION[opcode]
-    operation(machine)
+    operation(computer)
     nothing
 end
 
-function try_step!(machine::Machine)::Bool
+function try_step!(computer::Computer)::Bool
     try
-        step!(machine)
+        step!(computer)
         true
     catch e
         if !isa(e, ControlError)
@@ -236,12 +236,12 @@ function try_step!(machine::Machine)::Bool
     end
 end
 
-function run!(machine::Machine)::Int
+function run!(computer::Computer)::Int
     operation_count = 0
 
     try
         while true
-            step!(machine)
+            step!(computer)
             operation_count += 1
         end
     catch e

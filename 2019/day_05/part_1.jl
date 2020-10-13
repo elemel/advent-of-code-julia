@@ -2,17 +2,17 @@ include("../Intcode.jl")
 
 function main()
     program = parse.(Int, split(read(stdin, String), ","))
-    machine = Intcode.Machine(program, input_values=[1])
+    computer = Intcode.Computer(program, input_values=[1])
 
-    Intcode.run!(machine)
-    @assert Intcode.is_halted(machine)
+    Intcode.run!(computer)
+    @assert Intcode.is_halted(computer)
 
-    while length(machine.output_queue) >= 2
-        output = popfirst!(machine.output_queue)
+    while length(computer.output_queue) >= 2
+        output = popfirst!(computer.output_queue)
         @assert output == 0
     end
 
-    println(pop!(machine.output_queue))
+    println(pop!(computer.output_queue))
 end
 
 main()
