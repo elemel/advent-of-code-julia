@@ -1,7 +1,7 @@
 include("../Intcode.jl")
 
 function main()
-    program = parse.(Int, split(read(stdin, String), ","))
+    program = parse.(Int, split(strip(read(stdin, String)), ","))
     computer = Intcode.Computer(program)
 
     computer.memory[1] = 12
