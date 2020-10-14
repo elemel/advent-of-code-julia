@@ -50,7 +50,7 @@ function main()
         for intersection in intersections
     ]
 
-    println(min(combined_intersection_distances...))
+    println(minimum(combined_intersection_distances))
 end
 
 main()

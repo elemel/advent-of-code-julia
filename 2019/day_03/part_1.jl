@@ -14,7 +14,7 @@ function parse_path(path_str)
 end
 
 function render_path(path)
-    visited = Set()
+    visited_set = Set()
 
     x = 0
     y = 0
@@ -26,24 +26,18 @@ function render_path(path)
             x = x + dx
             y = y + dy
 
-            push!(visited, (x, y))
+            push!(visited_set, (x, y))
         end
     end
 
-    visited
-end
-
-function manhattan_length(position)
-    x, y = position
-    abs(x) + abs(y)
+    visited_set
 end
 
 function main()
     paths = parse_path.(readlines(stdin))
     visited_sets = render_path.(paths)
     intersections = intersect(visited_sets...)
-    intersection_distances = manhattan_length.(intersections)
-    println(min(intersection_distances...))
+    println(minimum(abs(x) + abs(y) for (x, y) in intersections))
 end
 
 main()
