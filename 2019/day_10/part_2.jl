@@ -46,20 +46,35 @@ function main()
 
     monitoring_station = pop!(asteroids)
 
-    sort!(
-        asteroids;
-        by=(asteroid -> squared_distance(monitoring_station, asteroid)))
-
-    direction_to_asteroids = group(
+    direction_to_stack = group(
         asteroid -> direction(monitoring_station, asteroid),
         asteroids)
 
-    vaporizations = sort([
-        (z, clockwise(direction), asteroid)
-        for (direction, aligned_asteroids) in pairs(direction_to_asteroids)
-            for (z, asteroid) in enumerate(aligned_asteroids)])
+    sorted_stacks = sort([
+        (clockwise(direction), stack)
+        for (direction, stack) in pairs(direction_to_stack)])
 
-    _, _, (bet_x, bet_y) = vaporizations[200]
+    queue = Deque{Any}()
+
+    for (_, stack) in sorted_stacks
+        sort!(
+            stack;
+            by=(asteroid -> squared_distance(monitoring_station, asteroid)),
+            rev=true)
+
+        push!(queue, stack)
+    end
+
+    for _ = 1:199
+        stack = popfirst!(queue)
+        pop!(stack)
+
+        if !isempty(stack)
+            push!(queue, stack)
+        end
+    end
+
+    bet_x, bet_y = pop!(popfirst!(queue))
     println(bet_x * 100 + bet_y)
 end
 
