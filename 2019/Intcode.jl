@@ -20,6 +20,7 @@ const JUMP_IF_TRUE = 5
 const JUMP_IF_FALSE = 6
 const LESS_THAN = 7
 const EQUALS = 8
+const ADJUST_RELATIVE_BASE = 9
 const HALT = 99
 
 end # module Opcodes
@@ -28,27 +29,41 @@ module ParameterModes
 
 const POSITION = 0
 const IMMEDIATE = 1
+const RELATIVE = 2
 
 end # module ParameterModes
 
 mutable struct Computer
-    instruction_pointer::Int
-
     # Zero-based indexing
     memory::OffsetArray{Int}
+
+    instruction_pointer::Int
+    relative_base::Int
 
     input_queue::Deque{Int}
     output_queue::Deque{Int}
 
     function Computer(
         program=[];
+        memory_size=0,
+
         instruction_pointer=0,
+        relative_base=0,
+
         input_values=[],
         output_values=[])
 
         computer = new()
+
         computer.instruction_pointer = instruction_pointer
+        computer.relative_base = relative_base
+
         computer.memory = OffsetArray(Array{Int}(program), -1)
+
+        if memory_size > length(computer.memory)
+            append!(
+                computer.memory, zeros(memory_size - length(computer.memory)))
+        end
 
         computer.input_queue = Deque{Int}()
         computer.output_queue = Deque{Int}()
@@ -79,6 +94,12 @@ function load(computer::Computer, parameter::Int)::Int
         computer.memory[address]
     elseif mode == ParameterModes.IMMEDIATE
         computer.memory[computer.instruction_pointer + parameter]
+    elseif mode == ParameterModes.RELATIVE
+        address = (
+            computer.memory[computer.instruction_pointer + parameter] +
+            computer.relative_base)
+
+        computer.memory[address]
     else
         throw(ParameterModeError())
     end
@@ -91,6 +112,12 @@ function store!(computer::Computer, parameter::Int, value::Int)::Nothing
 
     if mode == ParameterModes.POSITION
         address = computer.memory[computer.instruction_pointer + parameter]
+        computer.memory[address] = value
+    elseif mode == ParameterModes.RELATIVE
+        address = (
+            computer.memory[computer.instruction_pointer + parameter] +
+            computer.relative_base)
+
         computer.memory[address] = value
     else
         throw(ParameterModeError())
@@ -116,6 +143,12 @@ function add!(computer::Computer)::Nothing
     store!(computer, 3, result)
 
     computer.instruction_pointer += 4
+    nothing
+end
+
+function adjust_relative_base!(computer::Computer)::Nothing
+    computer.relative_base += load(computer, 1)
+    computer.instruction_pointer += 2
     nothing
 end
 
@@ -206,6 +239,7 @@ end # module Operations
 
 const OPCODE_TO_OPERATION = Dict(
     Opcodes.ADD => Operations.add!,
+    Opcodes.ADJUST_RELATIVE_BASE => Operations.adjust_relative_base!,
     Opcodes.EQUALS => Operations.equals!,
     Opcodes.HALT => Operations.halt,
     Opcodes.INPUT => Operations.input!,
