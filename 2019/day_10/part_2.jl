@@ -37,18 +37,19 @@ function main()
             for (x, char) in enumerate(line)
                 if char == '#']
 
-    monitoring_station_index = argmax(
-        [length(unique(direction(a, b) for b in asteroids if b != a))
-        for a in asteroids])
+    _, monitoring_station, direction_to_stack = maximum(
+        map(asteroids) do monitoring_station
+            stack = sort(asteroids; by=(
+                asteroid -> -squared_distance(monitoring_station, asteroid)))
 
-    asteroids[monitoring_station_index], asteroids[end] =
-        asteroids[end], asteroids[monitoring_station_index]
+            pop!(stack)
 
-    monitoring_station = pop!(asteroids)
+            direction_to_stack = group(
+                asteroid -> direction(monitoring_station, asteroid),
+                stack)
 
-    direction_to_stack = group(
-        asteroid -> direction(monitoring_station, asteroid),
-        asteroids)
+            length(direction_to_stack), monitoring_station, direction_to_stack
+        end)
 
     sorted_stacks = sort([
         (clockwise(direction), stack)
@@ -57,11 +58,6 @@ function main()
     queue = Deque{Any}()
 
     for (_, stack) in sorted_stacks
-        sort!(
-            stack;
-            by=(asteroid -> squared_distance(monitoring_station, asteroid)),
-            rev=true)
-
         push!(queue, stack)
     end
 
@@ -74,7 +70,7 @@ function main()
         end
     end
 
-    bet_x, bet_y = pop!(popfirst!(queue))
+    bet_x, bet_y = last(first(queue))
     println(bet_x * 100 + bet_y)
 end
 
