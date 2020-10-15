@@ -4,7 +4,8 @@ using SplitApplyCombine
 
 function direction(a, b)
     offset = b .- a
-    fld.(offset, gcd(offset...))
+    divisor = gcd(offset...)
+    divisor == 0 ? offset : fld.(offset, divisor)
 end
 
 function squared_distance(a, b)
@@ -16,13 +17,13 @@ function clockwise(direction)
     x, y = direction
 
     if x >= 0 && y < 0
-        0, abs(x // y)
+        1, abs(x // y)
     elseif y >= 0 && x > 0
-        1, abs(y // x)
+        2, abs(y // x)
     elseif x <= 0 && y > 0
-        2, abs(x // y)
+        3, abs(x // y)
     elseif y <= 0 && x < 0
-        3, abs(y // x)
+        4, abs(y // x)
     else
         0, 0 // 1
     end
@@ -37,28 +38,28 @@ function main()
             for (x, char) in enumerate(line)
                 if char == '#']
 
-    _, monitoring_station, direction_to_stack = maximum(
+    _, monitoring_station, aligned_targets = maximum(
         map(asteroids) do monitoring_station
-            stack = sort(asteroids; by=(
-                asteroid -> -squared_distance(monitoring_station, asteroid)))
-
-            pop!(stack)
-
-            direction_to_stack = group(
+            aligned_targets = group(
                 asteroid -> direction(monitoring_station, asteroid),
-                stack)
+                asteroids)
 
-            length(direction_to_stack), monitoring_station, direction_to_stack
+            delete!(keys(aligned_targets), (0, 0))
+            length(aligned_targets), monitoring_station, aligned_targets
         end)
 
-    sorted_stacks = sort([
-        (clockwise(direction), stack)
-        for (direction, stack) in pairs(direction_to_stack)])
+    clockwise_groups = sort([
+        (clockwise(direction), targets)
+        for (direction, targets) in pairs(aligned_targets)])
 
     queue = Deque{Any}()
 
-    for (_, stack) in sorted_stacks
-        push!(queue, stack)
+    for (_, targets) in clockwise_groups
+        sort!(
+            targets;
+            by=(target -> -squared_distance(monitoring_station, target)))
+
+        push!(queue, targets)
     end
 
     for _ = 1:199
