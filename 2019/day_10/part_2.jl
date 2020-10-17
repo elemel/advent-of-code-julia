@@ -1,6 +1,10 @@
+include("../../Julmust.jl")
+
 using DataStructures
 using LinearAlgebra
 using SplitApplyCombine
+
+using .Julmust
 
 function direction(a, b)
     offset = b .- a
@@ -55,9 +59,9 @@ function main()
     queue = Deque{Any}()
 
     for (_, targets) in clockwise_groups
-        sort!(
-            targets;
-            by=(target -> -squared_distance(monitoring_station, target)))
+        sortby!(targets) do target
+            -squared_distance(monitoring_station, target)
+        end
 
         push!(queue, targets)
     end

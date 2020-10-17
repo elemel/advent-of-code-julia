@@ -4,10 +4,10 @@ ANSWERS := $(patsubst %/part_2.jl,%/answer_2.txt,${ANSWERS_1})
 
 all: ${ANSWERS}
 
-2019/%/answer_1.txt: 2019/%/part_1.jl 2019/%/input.txt 2019/Intcode.jl
+2019/%/answer_1.txt: 2019/%/part_1.jl 2019/%/input.txt 2019/Intcode.jl Julmust.jl
 	julia 2019/$*/part_1.jl < 2019/$*/input.txt > $@
 
-2019/%/answer_2.txt: 2019/%/part_2.jl 2019/%/input.txt 2019/Intcode.jl
+2019/%/answer_2.txt: 2019/%/part_2.jl 2019/%/input.txt 2019/Intcode.jl Julmust.jl
 	julia 2019/$*/part_2.jl < 2019/$*/input.txt > $@
 
 clean:
