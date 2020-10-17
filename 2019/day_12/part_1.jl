@@ -1,33 +1,26 @@
-function gravity(positions)
-    [
-        sum(sign.(coordinates .- coordinates[j]))
-        for coordinates in eachrow(positions), j in axes(positions, 2)
-    ]
+using StaticArrays
+
+function parse_position(position_str)
+    MVector{3, Int}(
+        parse(Int, component_str[3:end])
+        for component_str in split(position_str[2 : end - 1], ", "))
 end
 
 function main()
-    values = Int[]
-
-    for line in readlines(stdin)
-        line = strip(line)[2:(end - 1)]
-
-        for part in split(line, ", ")
-            _, value_str = split(part, "=")
-            value = parse(Int, value_str)
-            push!(values, value)
-        end
-    end
-
-    positions = reshape(values, (3, 4))
-    velocities = zeros(Int, size(positions))
+    positions = Array{MVector{3,Int}}(map(parse_position, readlines(stdin)))
+    velocities = [zeros(MVector{3, Int}) for _ in positions]
 
     for _ = 1:1000
-        velocities .+= gravity(positions)
+        velocities .+= [
+            sum(sign.(b - a) for b in positions)
+            for a in positions
+        ]
+
         positions .+= velocities
     end
 
-    potential_energies = [sum(abs.(p)) for p in eachcol(positions)]
-    kinetic_energiees = [sum(abs.(v)) for v in eachcol(velocities)]
+    potential_energies = [sum(abs.(p)) for p in positions]
+    kinetic_energiees = [sum(abs.(v)) for v in velocities]
 
     println(sum(potential_energies .* kinetic_energiees))
 end
