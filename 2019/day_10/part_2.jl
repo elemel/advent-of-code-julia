@@ -2,7 +2,6 @@ include("../../Julmust.jl")
 
 using DataStructures
 using LinearAlgebra
-using SplitApplyCombine
 
 using .Julmust
 
@@ -44,11 +43,11 @@ function main()
 
     _, monitoring_station, aligned_targets = maximum(
         map(asteroids) do monitoring_station
-            aligned_targets = group(
-                asteroid -> direction(monitoring_station, asteroid),
-                asteroids)
+            aligned_targets = groupby(asteroids) do asteroid
+                direction(monitoring_station, asteroid)
+            end
 
-            delete!(keys(aligned_targets), (0, 0))
+            delete!(aligned_targets, (0, 0))
             length(aligned_targets), monitoring_station, aligned_targets
         end)
 
