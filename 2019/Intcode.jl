@@ -1,5 +1,7 @@
 module Intcode
 
+export Computer, is_blocked, is_halted, run!, step!
+
 using DataStructures
 using OffsetArrays
 
