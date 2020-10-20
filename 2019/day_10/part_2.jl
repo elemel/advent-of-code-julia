@@ -5,6 +5,8 @@ using LinearAlgebra
 
 using .Julmust
 
+Vec2 = Tuple{Int, Int}
+
 function direction(a, b)
     offset = b .- a
     divisor = gcd(offset...)
@@ -43,8 +45,11 @@ function main()
 
     _, monitoring_station, aligned_targets = maximum(
         map(asteroids) do monitoring_station
-            aligned_targets = groupby(asteroids) do asteroid
-                direction(monitoring_station, asteroid)
+            aligned_targets = DefaultDict{Vec2, Vector{Vec2}}(Vector{Vec2})
+
+            for asteroid in asteroids
+                key = direction(monitoring_station, asteroid)
+                push!(aligned_targets[key], asteroid)
             end
 
             delete!(aligned_targets, (0, 0))
@@ -55,7 +60,7 @@ function main()
         (clockwise(direction), targets)
         for (direction, targets) in pairs(aligned_targets)])
 
-    queue = Deque{Any}()
+    queue = Deque{Vector{Vec2}}()
 
     for (_, targets) in clockwise_groups
         sortby!(targets) do target
