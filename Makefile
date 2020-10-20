@@ -13,5 +13,5 @@ all: ${ANSWERS}
 clean:
 	rm -f ${ANSWERS}
 
-# .DELETE_ON_ERROR:
+.DELETE_ON_ERROR:
 .PHONY: all clean
