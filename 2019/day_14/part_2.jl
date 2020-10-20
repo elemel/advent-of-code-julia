@@ -87,6 +87,7 @@ function main()
     # Binary search
     while lower_bound_inclusive < upper_bound_exclusive - 1
         fuel_demand = fld(lower_bound_inclusive + upper_bound_exclusive, 2)
+        @assert lower_bound_inclusive < fuel_demand < upper_bound_exclusive
 
         chemical_to_demand = DefaultDict(0, "FUEL" => fuel_demand)
         produce!(chemical_to_demand, output_chemical_to_reaction)
