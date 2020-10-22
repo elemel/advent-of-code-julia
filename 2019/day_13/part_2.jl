@@ -13,7 +13,7 @@ const BALL = 4
 end # module TileIds
 
 function main()
-    program = parse.(Int, split(strip(read(stdin, String)), ","))
+    program = compile(read(stdin, String))
     computer = Computer(program, memory_size=4096)
 
     # Play for free

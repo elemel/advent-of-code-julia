@@ -1,19 +1,21 @@
 include("../Intcode.jl")
 
+using .Intcode
+
 function run_gravity_assist(program, noun, verb)
-    computer = Intcode.Computer(program)
+    computer = Computer(program)
 
     computer.memory[1] = noun
     computer.memory[2] = verb
 
-    Intcode.run!(computer)
-    @assert Intcode.is_halted(computer)
+    run!(computer)
+    @assert is_halted(computer)
 
     computer.memory[0]
 end
 
 function main()
-    program = parse.(Int, split(strip(read(stdin, String)), ","))
+    program = compile(read(stdin, String))
 
     noun, verb = first(
         (noun, verb)

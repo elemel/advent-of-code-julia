@@ -1,14 +1,16 @@
 include("../Intcode.jl")
 
+using .Intcode
+
 function main()
-    program = parse.(Int, split(strip(read(stdin, String)), ","))
-    computer = Intcode.Computer(program)
+    program = compile(read(stdin, String))
+    computer = Computer(program)
 
     computer.memory[1] = 12
     computer.memory[2] = 2
 
-    Intcode.run!(computer)
-    @assert Intcode.is_halted(computer)
+    run!(computer)
+    @assert is_halted(computer)
 
     println(computer.memory[0])
 end

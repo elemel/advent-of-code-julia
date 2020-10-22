@@ -1,6 +1,6 @@
 module Intcode
 
-export Computer, is_blocked, is_halted, run!, step!
+export compile, Computer, is_blocked, is_halted, run!, step!
 
 using DataStructures
 using OffsetArrays
@@ -35,6 +35,11 @@ const RELATIVE = 2
 
 end # module ParameterModes
 
+function compile(program_str::String)::Array{Int}
+    program_str = strip(program_str)
+    isempty(program_str) ? [] : parse.(Int, split(program_str, ","))
+end
+
 mutable struct Computer
     # Zero-based indexing
     memory::OffsetArray{Int}
@@ -56,11 +61,10 @@ mutable struct Computer
         output_values=[])
 
         computer = new()
+        computer.memory = OffsetArray(Array{Int}(program), -1)
 
         computer.instruction_pointer = instruction_pointer
         computer.relative_base = relative_base
-
-        computer.memory = OffsetArray(Array{Int}(program), -1)
 
         if memory_size > length(computer.memory)
             append!(

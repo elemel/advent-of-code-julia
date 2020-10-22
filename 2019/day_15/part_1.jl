@@ -61,7 +61,7 @@ function search(position, computer, position_to_reply)
 end
 
 function main()
-    program = parse.(Int, split(strip(read(stdin, String)), ","))
+    program = compile(read(stdin, String))
     computer = Computer(program)
 
     position_to_reply = Dict((0, 0) => StatusCodes.OPEN)
