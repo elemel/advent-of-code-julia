@@ -1,10 +1,10 @@
 function main()
     entries = parse.(Int, readlines(stdin))
 
-    for entry_1 in entries
-        for entry_2 in entries
-            if entry_1 + entry_2 == 2020
-                println(entry_1 * entry_2)
+    for i = 1:length(entries)
+        for j = (i + 1):length(entries)
+            if entries[i] + entries[j] == 2020
+                println(entries[i] * entries[j])
                 return
             end
         end
