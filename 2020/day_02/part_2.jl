@@ -1,8 +1,9 @@
 function parse_entry(entry_str)
-    policy_str, password = split(entry_str, ": ")
-    positions_str, letter_str = split(policy_str, " ")
+    policy_str, password = strip.(split(entry_str, ":"))
+    positions_str, letter_str = split(policy_str)
     position_1, position_2 = parse.(Int, split(positions_str, "-"))
-    return ((position_1, position_2), letter_str[1]), strip(password)
+    policy = (position_1, position_2), letter_str[1]
+    return policy, password
 end
 
 function is_valid_entry(policy, password)

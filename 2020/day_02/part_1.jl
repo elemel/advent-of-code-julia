@@ -1,8 +1,9 @@
 function parse_entry(entry_str)
-    policy_str, password = split(entry_str, ": ")
-    range_str, letter_str = split(policy_str, " ")
+    policy_str, password = strip.(split(entry_str, ":"))
+    range_str, letter_str = split(policy_str)
     min_count, max_count = parse.(Int, split(range_str, "-"))
-    return ((min_count, max_count), letter_str[1]), strip(password)
+    policy = (min_count, max_count), letter_str[1]
+    return policy, password
 end
 
 function is_valid_entry(policy, password)
