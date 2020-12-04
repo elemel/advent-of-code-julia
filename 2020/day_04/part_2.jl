@@ -1,27 +1,27 @@
 const EYE_COLORS = Set(split("amb blu brn gry grn hzl oth"))
 
-function is_number_in_range(s, r)
-    occursin(r"^[1-9][0-9]+$", s) && parse(Int, s) in r
+function is_number_in_range(str, r)
+    occursin(r"^[1-9][0-9]+$", str) && parse(Int, str) in r
 end
 
-function is_valid_height(s)
-    if endswith(s, "cm")
-        return is_number_in_range(s[1 : end - 2], 150:193)
-    elseif endswith(s, "in")
-        return is_number_in_range(s[1 : end - 2], 59:76)
+function is_valid_height(str)
+    if endswith(str, "cm")
+        return is_number_in_range(str[1 : end - 2], 150:193)
+    elseif endswith(str, "in")
+        return is_number_in_range(str[1 : end - 2], 59:76)
     else
         return false
     end
 end
 
 const REQUIRED_FIELDS = Dict(
-    "byr" => s -> is_number_in_range(s, 1920:2002),
-    "iyr" => s -> is_number_in_range(s, 2010:2020),
-    "eyr" => s -> is_number_in_range(s, 2020:2030),
+    "byr" => value -> is_number_in_range(value, 1920:2002),
+    "iyr" => value -> is_number_in_range(value, 2010:2020),
+    "eyr" => value -> is_number_in_range(value, 2020:2030),
     "hgt" => is_valid_height,
-    "hcl" => s -> occursin(r"^#[0-9a-f]{6}$", s),
-    "ecl" => s -> s in EYE_COLORS,
-    "pid" => s -> occursin(r"^[0-9]{9}$", s),
+    "hcl" => value -> occursin(r"^#[0-9a-f]{6}$", value),
+    "ecl" => value -> value in EYE_COLORS,
+    "pid" => value -> occursin(r"^[0-9]{9}$", value),
 )
 
 function parse_passport(str)

@@ -1,5 +1,5 @@
-function parse_entry(s)
-    m = match(r"^([0-9]+)-([0-9]+) ([a-z]): ([a-z]+)$", s)
+function parse_entry(str)
+    m = match(r"^([0-9]+)-([0-9]+) ([a-z]): ([a-z]+)$", str)
     parse(Int, m[1]), parse(Int, m[2]), m[3][1], m[4]
 end
 
