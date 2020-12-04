@@ -63,7 +63,7 @@ function main()
     queue = Deque{Vector{Vec2}}()
 
     for (_, targets) in clockwise_groups
-        sortby!(targets) do target
+        sort_by!(targets) do target
             -squared_distance(monitoring_station, target)
         end
 

@@ -1,12 +1,12 @@
 module Julmust
 
-export is_digits, is_hex_digit, is_hex_digits, sortby, sortby!
+export is_digits, is_hex_digit, is_hex_digits, sort_by, sort_by!
 
-function sortby(func, values)
+function sort_by(func, values)
     sort(values, by=f)
 end
 
-function sortby!(func, values)
+function sort_by!(func, values)
     sort!(values, by=func)
 end
 
