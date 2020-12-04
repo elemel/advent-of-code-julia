@@ -1,3 +1,5 @@
+const EYE_COLORS = Set(split("amb blu brn gry grn hzl oth"))
+
 function is_number_in_range(s, r)
     occursin(r"^[1-9][0-9]+$", s) && parse(Int, s) in r
 end
@@ -18,7 +20,7 @@ const REQUIRED_FIELDS = Dict(
     "eyr" => s -> is_number_in_range(s, 2020:2030),
     "hgt" => is_valid_height,
     "hcl" => s -> occursin(r"^#[0-9a-f]{6}$", s),
-    "ecl" => s -> occursin(r"^amb|blu|brn|gry|grn|hzl|oth$", s),
+    "ecl" => s -> s in EYE_COLORS,
     "pid" => s -> occursin(r"^[0-9]{9}$", s),
 )
 
