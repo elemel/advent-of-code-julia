@@ -1,20 +1,18 @@
-function parse_entry(entry_str)
-    policy_str, password = strip.(split(entry_str, ":"))
-    positions_str, letter_str = split(policy_str)
-    position_1, position_2 = parse.(Int, split(positions_str, "-"))
-    policy = (position_1, position_2), letter_str[1]
-    return policy, password
+function parse_entry(s)
+    m = match(r"^([0-9]+)-([0-9]+) ([a-z]): ([a-z]+)$", s)
+    [parse(Int, m[1]), parse(Int, m[2])], m[3][1], m[4]
 end
 
-function is_valid_entry(policy, password)
-    positions, letter = policy
-    return sum(password[pos] == letter for pos in positions) == 1
+function is_valid_entry(entry)
+    positions, letter, password = entry
+    sum(password[p] == letter for p in positions) == 1
 end
 
 function main()
-    entries = parse_entry.(readlines(stdin))
-    println(sum(
-        is_valid_entry(policy, password) for (policy, password) in entries))
+    input = readlines(stdin)
+    entries = parse_entry.(input)
+    answer = sum(is_valid_entry, entries)
+    println(answer)
 end
 
 main()

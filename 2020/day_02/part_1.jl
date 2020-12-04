@@ -1,21 +1,18 @@
-function parse_entry(entry_str)
-    policy_str, password = strip.(split(entry_str, ":"))
-    range_str, letter_str = split(policy_str)
-    min_count, max_count = parse.(Int, split(range_str, "-"))
-    policy = (min_count, max_count), letter_str[1]
-    return policy, password
+function parse_entry(s)
+    m = match(r"^([0-9]+)-([0-9]+) ([a-z]): ([a-z]+)$", s)
+    parse(Int, m[1]):parse(Int, m[2]), m[3][1], m[4]
 end
 
-function is_valid_entry(policy, password)
-    (min_count, max_count), letter = policy
-    letter_count = sum(char == letter for char in password)
-    return min_count <= letter_count && letter_count <= max_count
+function is_valid_entry(entry)
+    count_range, letter, password = entry
+    sum(c == letter for c in password) in count_range
 end
 
 function main()
-    entries = parse_entry.(readlines(stdin))
-    println(sum(
-        is_valid_entry(policy, password) for (policy, password) in entries))
+    input = readlines(stdin)
+    entries = parse_entry.(input)
+    answer = sum(is_valid_entry, entries)
+    println(answer)
 end
 
 main()
