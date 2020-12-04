@@ -14,7 +14,7 @@ function main()
 
         while y <= height
             if map_rows[y][x] == '#'
-                tree_count = tree_count + 1
+                tree_count += 1
             end
 
             x = mod(x + dx, 1:width)

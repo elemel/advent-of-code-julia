@@ -1,12 +1,4 @@
-const REQUIRED_FIELDS = Set(split("""
-    byr
-    iyr
-    eyr
-    hgt
-    hcl
-    ecl
-    pid
-    """))
+const REQUIRED_FIELDS = Set(split("byr iyr eyr hgt hcl ecl pid"))
 
 function parse_passport(str)
     Dict(split(key_value_str, ":") for key_value_str in split(str))

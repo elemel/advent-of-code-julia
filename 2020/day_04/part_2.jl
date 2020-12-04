@@ -1,34 +1,21 @@
-include("../../Julmust.jl")
-
-using .Julmust
+function is_number_in_range(s, r)
+    occursin(r"^[1-9][0-9]+$", s) && in(parse(Int, s), r)
+end
 
 function is_valid_height(s)
-    if length(s) < 3
-        return false
-    end
-
-    number_str = s[1 : end - 2]
-    unit = s[end - 1 : end]
-
-    if !is_digits(number_str)
-        return false
-    end
-
-    number = parse(Int, number_str)
-
-    if unit == "cm"
-        return number >= 150 && number <= 193
-    elseif unit == "in"
-        return number >= 59 && number <= 76
+    if endswith(s, "cm")
+        return is_number_in_range(s[1 : end - 2], 150:193)
+    elseif endswith(s, "in")
+        return is_number_in_range(s[1 : end - 2], 59:76)
     else
         return false
     end
 end
 
 const REQUIRED_FIELDS = Dict(
-    "byr" => s -> is_digits(s) && s >= "1920" && s <= "2002",
-    "iyr" => s -> is_digits(s) && s >= "2010" && s <= "2020",
-    "eyr" => s -> is_digits(s) && s >= "2020" && s <= "2030",
+    "byr" => s -> is_number_in_range(s, 1920:2002),
+    "iyr" => s -> is_number_in_range(s, 2010:2020),
+    "eyr" => s -> is_number_in_range(s, 2020:2030),
     "hgt" => is_valid_height,
     "hcl" => s -> occursin(r"^#[0-9a-f]{6}$", s),
     "ecl" => s -> occursin(r"^amb|blu|brn|gry|grn|hzl|oth$", s),
