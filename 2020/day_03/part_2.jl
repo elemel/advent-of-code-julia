@@ -1,6 +1,5 @@
 function main()
     input = readlines(stdin)
-
     width, height = length(input[1]), length(input)
     answer = 1
 
