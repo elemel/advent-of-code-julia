@@ -1,5 +1,5 @@
 function is_number_in_range(s, r)
-    occursin(r"^[1-9][0-9]+$", s) && in(parse(Int, s), r)
+    occursin(r"^[1-9][0-9]+$", s) && parse(Int, s) in r
 end
 
 function is_valid_height(s)
