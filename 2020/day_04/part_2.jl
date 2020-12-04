@@ -2,8 +2,6 @@ include("../../Julmust.jl")
 
 using .Julmust
 
-const EYE_COLORS = Set(split("amb blu brn gry grn hzl oth"))
-
 function is_valid_height(s)
     if length(s) < 3
         return false
@@ -32,9 +30,9 @@ const REQUIRED_FIELDS = Dict(
     "iyr" => s -> is_digits(s) && s >= "2010" && s <= "2020",
     "eyr" => s -> is_digits(s) && s >= "2020" && s <= "2030",
     "hgt" => is_valid_height,
-    "hcl" => s -> length(s) == 7 && s[1] == '#' && is_hex_digits(s[2:end]),
-    "ecl" => s -> in(s, EYE_COLORS),
-    "pid" => s -> length(s) == 9 && is_digits(s),
+    "hcl" => s -> occursin(r"^#[0-9a-f]{6}$", s),
+    "ecl" => s -> occursin(r"^amb|blu|brn|gry|grn|hzl|oth$", s),
+    "pid" => s -> occursin(r"^[0-9]{9}$", s),
 )
 
 function parse_passport(str)
