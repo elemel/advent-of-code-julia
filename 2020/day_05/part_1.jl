@@ -5,7 +5,7 @@ end
 
 function main()
     input = readlines(stdin)
-    answer = maximum(decode_seat_id(line) for line in input)
+    answer = maximum(decode_seat_id.(input))
     println(answer)
 end
 

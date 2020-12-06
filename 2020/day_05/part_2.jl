@@ -5,7 +5,7 @@ end
 
 function main()
     input = readlines(stdin)
-    seat_ids = [decode_seat_id(line) for line in input]
+    seat_ids = decode_seat_id.(input)
     answer = first(setdiff(minimum(seat_ids):maximum(seat_ids), seat_ids))
     println(answer)
 end
