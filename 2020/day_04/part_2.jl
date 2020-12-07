@@ -6,11 +6,11 @@ end
 
 function is_valid_height(str)
     if endswith(str, "cm")
-        return is_number_in_range(str[1 : end - 2], 150:193)
+        is_number_in_range(str[1 : end - 2], 150:193)
     elseif endswith(str, "in")
-        return is_number_in_range(str[1 : end - 2], 59:76)
+        is_number_in_range(str[1 : end - 2], 59:76)
     else
-        return false
+        false
     end
 end
 
@@ -21,8 +21,7 @@ const REQUIRED_FIELDS = Dict(
     "hgt" => is_valid_height,
     "hcl" => value -> occursin(r"^#[0-9a-f]{6}$", value),
     "ecl" => value -> value in EYE_COLORS,
-    "pid" => value -> occursin(r"^[0-9]{9}$", value),
-)
+    "pid" => value -> occursin(r"^[0-9]{9}$", value))
 
 function parse_passport(str)
     Dict(split(key_value_str, ":") for key_value_str in split(str))

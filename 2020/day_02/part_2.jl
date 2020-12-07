@@ -1,11 +1,11 @@
 function parse_entry(str)
     m = match(r"^([0-9]+)-([0-9]+) ([a-z]): ([a-z]+)$", str)
-    parse(Int, m[1]), parse(Int, m[2]), m[3][1], m[4]
+    return parse(Int, m[1]), parse(Int, m[2]), m[3][1], m[4]
 end
 
 function is_valid_entry(entry)
     i, j, letter, password = entry
-    sum(password[k] == letter for k in [i, j]) == 1
+    return sum(password[k] == letter for k in [i, j]) == 1
 end
 
 function main()
