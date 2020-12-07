@@ -1,11 +1,11 @@
 const REQUIRED_FIELDS = Set(split("byr iyr eyr hgt hcl ecl pid"))
 
 function parse_passport(str)
-    Dict(split(key_value_str, ":") for key_value_str in split(str))
+    return Dict(split(key_value_str, ":") for key_value_str in split(str))
 end
 
 function is_valid_passport(passport)
-    all(haskey(passport, key) for key in REQUIRED_FIELDS)
+    return all(haskey(passport, key) for key in REQUIRED_FIELDS)
 end
 
 function main()

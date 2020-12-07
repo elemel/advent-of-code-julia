@@ -1,16 +1,16 @@
 const EYE_COLORS = Set(split("amb blu brn gry grn hzl oth"))
 
 function is_number_in_range(str, r)
-    occursin(r"^[1-9][0-9]+$", str) && parse(Int, str) in r
+    return occursin(r"^[1-9][0-9]+$", str) && parse(Int, str) in r
 end
 
 function is_valid_height(str)
     if endswith(str, "cm")
-        is_number_in_range(str[1 : end - 2], 150:193)
+        return is_number_in_range(str[1 : end - 2], 150:193)
     elseif endswith(str, "in")
-        is_number_in_range(str[1 : end - 2], 59:76)
+        return is_number_in_range(str[1 : end - 2], 59:76)
     else
-        false
+        return false
     end
 end
 
@@ -24,11 +24,11 @@ const REQUIRED_FIELDS = Dict(
     "pid" => value -> occursin(r"^[0-9]{9}$", value))
 
 function parse_passport(str)
-    Dict(split(key_value_str, ":") for key_value_str in split(str))
+    return Dict(split(key_value_str, ":") for key_value_str in split(str))
 end
 
 function is_valid_passport(passport)
-    all(
+    return all(
         haskey(passport, key) && pred(passport[key])
         for (key, pred) in REQUIRED_FIELDS)
 end

@@ -12,7 +12,7 @@ function parse_contents(s)
 end
 
 function parse_rule(s)
-    color, contents_str = split(s[1: end - 1], " bags contain ")
+    color, contents_str = split(s[1 : end - 1], " bags contain ")
     return color, parse_contents(contents_str)
 end
 
