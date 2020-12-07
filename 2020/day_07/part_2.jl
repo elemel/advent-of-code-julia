@@ -1,28 +1,29 @@
-function parse_rule(s)
-    color, tail = split(s, " bags contain ")
-    children = Dict()
+function parse_content(s)
+    count_str, color = match(r"^(\d+) (.+) bags?$", s).captures
+    return color, parse(Int, count_str)
+end
 
-    if tail != "no other bags."
-        stripped_tail = tail[1 : end - 1]
-
-        for child_str in split(stripped_tail, ", ")
-            count_str, child_tail = split(child_str, " ", limit=2)
-            child_color, _ = rsplit(child_tail, " ", limit=2)
-            children[child_color] = parse(Int, count_str)
-        end
+function parse_contents(s)
+    if s == "no other bags"
+        return Dict()
     end
 
-    color, children
+    return Dict(parse_content.(split(s, ", ")))
+end
+
+function parse_rule(s)
+    color, contents_str = split(s[1: end - 1], " bags contain ")
+    return color, parse_contents(contents_str)
 end
 
 function required_inside(color, rules)
-    result = 0
-
-    for (child_color, child_count) in rules[color]
-        result += child_count * (1 + required_inside(child_color, rules))
+    if isempty(rules[color])
+        return 0
     end
 
-    result
+    return sum(
+        child_count * (1 + required_inside(child_color, rules))
+        for (child_color, child_count) in rules[color])
 end
 
 function main()
