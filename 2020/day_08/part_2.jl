@@ -38,14 +38,9 @@ function main()
         operation, argument = instructions[address]
 
         if operation == "jmp" || operation == "nop"
+            changed_operation = operation == "jmp" ? "nop" : "jmp"
             changed_instructions = collect(instructions)
-
-            if operation == "jmp"
-                changed_instructions[address] = "nop", argument
-            else
-                changed_instructions[address] = "jmp", argument
-            end
-
+            changed_instructions[address] = changed_operation, argument
             completed, answer = run_program(changed_instructions)
 
             if completed
