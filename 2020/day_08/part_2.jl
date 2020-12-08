@@ -46,17 +46,18 @@ function main()
     instructions = parse_instruction.(input)
     answer = 0
 
-    for address in 1:length(instructions)
-        changed_instruction = change_instruction(instructions[address])
+    for (address, instruction) in enumerate(instructions)
+        changed_instruction = change_instruction(instruction)
 
-        if changed_instruction != instructions[address]
-            changed_instructions = collect(instructions)
-            changed_instructions[address] = changed_instruction
-            terminated_normally, answer = run_program(changed_instructions)
+        if changed_instruction != instruction
+            instructions[address] = changed_instruction
+            terminated_normally, answer = run_program(instructions)
 
             if terminated_normally
                 break
             end
+
+            instructions[address] = instruction
         end
     end
 
