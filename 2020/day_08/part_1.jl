@@ -12,12 +12,7 @@ function main()
     accumulator = 0
     visited = Set()
 
-    while true
-        if ip in visited
-            answer = accumulator
-            break
-        end
-
+    while !(ip in visited)
         push!(visited, ip)
         operation, argument = instructions[ip]
 
@@ -31,6 +26,7 @@ function main()
         end
     end
 
+    answer = accumulator
     println(answer)
 end
 
