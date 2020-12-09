@@ -7,7 +7,7 @@ function main()
         numbers[i]
         for i in PREAMBLE_SIZE + 1 : length(numbers)
             if !any(numbers[j] != numbers[k] &&
-                sum(numbers[j] + numbers[k]) == numbers[i]
+                numbers[j] + numbers[k] == numbers[i]
                 for j in i - PREAMBLE_SIZE : i - 1
                     for k in i - PREAMBLE_SIZE : i - 1))
     sums = cumsum(numbers)
