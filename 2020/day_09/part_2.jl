@@ -15,7 +15,7 @@ function main()
         minimum(numbers[m] for m in j:k) + maximum(numbers[n] for n in j:k)
         for i in 3:length(numbers)
             for j in 1 : i - 2
-                for k in j + 1:i - 1
+                for k in j + 1 : i - 1
                     if sums[k] - sums[j] + numbers[j] == invalid_number)
     println(answer)
 end
