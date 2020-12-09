@@ -8,8 +8,8 @@ function main()
         for i in PREAMBLE_SIZE + 1 : length(numbers)
             if !any(numbers[j] != numbers[k] &&
                 numbers[j] + numbers[k] == numbers[i]
-                for j in i - PREAMBLE_SIZE : i - 1
-                    for k in i - PREAMBLE_SIZE : i - 1))
+                for j in i - PREAMBLE_SIZE : i - 1,
+                    k in i - PREAMBLE_SIZE : i - 1))
     println(answer)
 end
 
