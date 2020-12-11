@@ -1,3 +1,4 @@
+# Essential Julia utilities for Advent of Code
 module Julmust
 
 export
