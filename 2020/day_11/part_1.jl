@@ -1,23 +1,17 @@
-const DIRECTIONS = [
-    (-1, -1), (0, -1), (1, -1),
-    (-1, 0), (1, 0),
-    (-1, 1), (0, 1), (1, 1),
-]
+include("../../Julmust.jl")
 
-function get_cell(grid, x, y, default)
-    return y in 1:length(grid) && x in 1:length(grid[y]) ? grid[y][x] : default
-end
+using .Julmust
 
-function count_adjacent(grid, x, y, value)
+function count_adjacent(grid, y, x, value)
     return sum(
-        get_cell(grid, x + dx, y + dy, '.') == value
-        for (dx, dy) in DIRECTIONS)
+        get_grid_cell(grid, y + dy, x + dx, '.') == value
+        for (dy, dx) in GRID_DIRECTIONS)
 end
 
-function step_cell(grid, x, y)
-    if grid[y][x] == 'L' && count_adjacent(grid, x, y, '#') == 0
+function apply_rules(grid, y, x)
+    if grid[y][x] == 'L' && count_adjacent(grid, y, x, '#') == 0
         return '#'
-    elseif grid[y][x] == '#' && count_adjacent(grid, x, y, '#') >= 4
+    elseif grid[y][x] == '#' && count_adjacent(grid, y, x, '#') >= 4
         return 'L'
     else
         return grid[y][x]
@@ -28,11 +22,10 @@ function main()
     input = readlines(stdin)
     grid = collect.(input)
 
-    width = length(grid[1])
-    height = length(grid)
-
     while true
-        new_grid = [[step_cell(grid, x, y) for x in 1:width] for y in 1:height]
+        new_grid = [
+            [apply_rules(grid, y, x) for x in 1:length(row)]
+            for (y, row) in enumerate(grid)]
 
         if new_grid == grid
             break
@@ -41,7 +34,7 @@ function main()
         grid = new_grid
     end
 
-    answer = sum(grid[y][x] == '#' for y in 1:height, x in 1:width)
+    answer = sum(value == '#' for row in grid for value in row)
     println(answer)
 end
 

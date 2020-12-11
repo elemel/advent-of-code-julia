@@ -1,38 +1,17 @@
-const DIRECTIONS = [
-    (-1, -1), (0, -1), (1, -1),
-    (-1, 0), (1, 0),
-    (-1, 1), (0, 1), (1, 1),
-]
+include("../../Julmust.jl")
 
-function in_grid_bounds(grid, x, y)
-    return y in 1:length(grid) && x in 1:length(grid[y])
-end
+using .Julmust
 
-function raycast(grid, x, y, dx, dy, default)
-    while true
-        x += dx
-        y += dy
-
-        if !in_grid_bounds(grid, x, y)
-            return default
-        end
-
-        if grid[y][x] != default
-            return grid[y][x]
-        end
-    end
-end
-
-function count_visible(grid, x, y, value)
+function count_visible(grid, y, x, value)
     return sum(
-        raycast(grid, x, y, dx, dy, '.') == value
-        for (dx, dy) in DIRECTIONS)
+        grid_raycast(grid, y, x, dy, dx, '.') == value
+        for (dy, dx) in GRID_DIRECTIONS)
 end
 
-function step_cell(grid, x, y)
-    if grid[y][x] == 'L' && count_visible(grid, x, y, '#') == 0
+function apply_rules(grid, y, x)
+    if grid[y][x] == 'L' && count_visible(grid, y, x, '#') == 0
         return '#'
-    elseif grid[y][x] == '#' && count_visible(grid, x, y, '#') >= 5
+    elseif grid[y][x] == '#' && count_visible(grid, y, x, '#') >= 5
         return 'L'
     else
         return grid[y][x]
@@ -43,11 +22,10 @@ function main()
     input = readlines(stdin)
     grid = collect.(input)
 
-    width = length(grid[1])
-    height = length(grid)
-
     while true
-        new_grid = [[step_cell(grid, x, y) for x in 1:width] for y in 1:height]
+        new_grid = [
+            [apply_rules(grid, y, x) for x in 1:length(row)]
+            for (y, row) in enumerate(grid)]
 
         if new_grid == grid
             break
@@ -56,7 +34,7 @@ function main()
         grid = new_grid
     end
 
-    answer = sum(grid[y][x] == '#' for y in 1:height, x in 1:width)
+    answer = sum(value == '#' for row in grid for value in row)
     println(answer)
 end
 
