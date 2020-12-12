@@ -1,5 +1,5 @@
-function turn(value, x, y, dx, dy)
-    for _ in 1:mod(div(value, 90), 4)
+function turn(ang, x, y, dx, dy)
+    for _ in 1:mod(div(ang, 90), 4)
         dx, dy = -dy, dx
     end
 
