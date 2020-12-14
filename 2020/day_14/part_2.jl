@@ -1,5 +1,20 @@
 using DataStructures
 
+function increment_floating_address(address, mask)
+    for bit in 0:35
+        if mask & (1 << bit) != Int64(0)
+            if address & (1 << bit) == Int64(0)
+                address |= 1 << bit
+                break
+            else
+                address &= ~(1 << bit)
+            end
+        end
+    end
+
+    return address
+end
+
 function main()
     input = readlines(stdin)
     memory = DefaultDict{Int64, Int64}(Int64(0))
@@ -26,17 +41,8 @@ function main()
                 actual_adress = (
                     address & unchanged_mask | one_mask | floating_address)
                 memory[actual_adress] = value
-
-                for bit in 0:35
-                    if floating_mask & (1 << bit) != Int64(0)
-                        if floating_address & (1 << bit) == Int64(0)
-                            floating_address |= 1 << bit
-                            break
-                        else
-                            floating_address &= ~(1 << bit)
-                        end
-                    end
-                end
+                floating_address = increment_floating_address(
+                    floating_address, floating_mask)
 
                 if floating_address == Int64(0)
                     break
