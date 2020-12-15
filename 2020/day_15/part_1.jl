@@ -2,21 +2,22 @@ function main()
     input = readlines(stdin)
     starting_numbers = parse.(Int, split(input[1], ","))
     memory = Dict{Int, Int}()
-    answer = 0
+    previous_number = 0
 
     for turn in 1:2020
         if turn <= length(starting_numbers)
             number = starting_numbers[turn]
-        elseif !haskey(memory, answer)
+        elseif !haskey(memory, previous_number)
             number = 0
         else
-            number = turn - 1 - memory[answer]
+            number = turn - 1 - memory[previous_number]
         end
 
-        memory[answer] = turn - 1
-        answer = number
+        memory[previous_number] = turn - 1
+        previous_number = number
     end
 
+    answer = previous_number
     println(answer)
 end
 
