@@ -13,6 +13,15 @@ function parse_ticket(s)
     return parse.(Int, split(s, ","))
 end
 
+function in_rule(value, rule)
+    name, ranges = rule
+    return any(value in rng for rng in ranges)
+end
+
+function is_valid_value(value, rules)
+    return any(in_rule(value, rule) for rule in rules)
+end
+
 function main()
     input = readlines(stdin)
     rules_str, my_ticket_str, nearby_tickets_str = split(
@@ -26,9 +35,7 @@ function main()
         value
         for ticket in nearby_tickets
             for value in ticket
-                if !any(value in rng
-                    for (name, ranges) in rules
-                        for rng in ranges))
+                if !is_valid_value(value, rules))
     println(answer)
 end
 
