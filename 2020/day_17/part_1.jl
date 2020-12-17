@@ -9,19 +9,19 @@ function update_cell(x, y, z, grid)
 end
 
 function update_grid(grid)
-    min_x = minimum(x for (x, y, z) in grid) - 1
-    min_y = minimum(y for (x, y, z) in grid) - 1
-    min_z = minimum(z for (x, y, z) in grid) - 1
+    min_x = minimum(x for (x, y, z) in grid)
+    min_y = minimum(y for (x, y, z) in grid)
+    min_z = minimum(z for (x, y, z) in grid)
 
-    max_x = maximum(x for (x, y, z) in grid) + 1
-    max_y = maximum(y for (x, y, z) in grid) + 1
-    max_z = maximum(z for (x, y, z) in grid) + 1
+    max_x = maximum(x for (x, y, z) in grid)
+    max_y = maximum(y for (x, y, z) in grid)
+    max_z = maximum(z for (x, y, z) in grid)
 
     return Set(
         (x, y, z)
-        for x in min_x:max_x
-            for y in min_y:max_y
-                for z in min_z:max_z
+        for x in min_x - 1 : max_x + 1
+            for y in min_y - 1 : max_y + 1
+                for z in min_z - 1 : max_z + 1
                     if update_cell(x, y, z, grid))
 end
 
