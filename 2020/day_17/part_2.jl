@@ -5,8 +5,8 @@ function update_cell(x, y, z, w, grid)
             for y2 in y - 1 : y + 1
                 for z2 in z - 1 : z + 1
                     for w2 in w - 1 : w + 1)
-
-    return (x, y, z, w) in grid ? (active_count in 3:4) : active_count == 3
+    active_range = (x, y, z, w) in grid ? (3:4) : (3:3)
+    return active_count in active_range
 end
 
 function update_grid(grid)
@@ -34,7 +34,8 @@ function main()
     grid = Set(
         (x, y, 0, 0)
         for (y, line) in enumerate(input)
-            for (x, char) in enumerate(line) if char == '#')
+            for (x, char) in enumerate(line)
+                if char == '#')
 
     for cycle in 1:6
         grid = update_grid(grid)
