@@ -1,62 +1,41 @@
-include("../../Julmust.jl")
+function apply_op!(vals, ops)
+    op = pop!(ops)
 
-using .Julmust
+    if op == '+'
+        push!(vals, pop!(vals) + pop!(vals))
+    elseif op == '*'
+        push!(vals, pop!(vals) * pop!(vals))
+    end
+end
 
+# See: https://www.geeksforgeeks.org/expression-evaluation/
 function evaluate_line(line)
-    re = to_tokenizer_regex([
-        "op" => r"[(+*)]",
-        "num" => r"[0-9]+"])
-
     vals = []
     ops = []
 
-    for (name, token) in tokenize(line, re)
-        if token == "("
-            push!(ops, token)
+    for char in line
+        if char == '('
+            push!(ops, char)
             result = 0
-        elseif name == "num"
-            push!(vals, parse(Int, token))
-        elseif token == ")"
-            while ops[end] != "("
-                op = pop!(ops)
-
-                if op == "+"
-                    push!(vals, pop!(vals) + pop!(vals))
-                elseif op == "*"
-                    push!(vals, pop!(vals) * pop!(vals))
-                else
-                    throw("Bad op")
-                end
+        elseif isdigit(char)
+            push!(vals, parse(Int, char))
+        elseif char == ')'
+            while ops[end] != '('
+                apply_op!(vals, ops)
             end
 
             pop!(ops)
-        elseif token in ["+", "*"]
-            while !isempty(ops) && ops[end] != "("
-                op = pop!(ops)
-
-                if op == "+"
-                    push!(vals, pop!(vals) + pop!(vals))
-                elseif op == "*"
-                    push!(vals, pop!(vals) * pop!(vals))
-                else
-                    throw("Bad op")
-                end
+        elseif char in ['+', '*']
+            while !isempty(ops) && ops[end] != '('
+                apply_op!(vals, ops)
             end
 
-            push!(ops, token)
+            push!(ops, char)
         end
     end
 
     while !isempty(ops)
-        op = pop!(ops)
-
-        if op == "+"
-            push!(vals, pop!(vals) + pop!(vals))
-        elseif op == "*"
-            push!(vals, pop!(vals) * pop!(vals))
-        else
-            throw("Bad op")
-        end
+        apply_op!(vals, ops)
     end
 
     return only(vals)
