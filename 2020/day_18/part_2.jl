@@ -1,14 +1,20 @@
-using Tokenize
+include("../../Julmust.jl")
+
+using .Julmust
 
 function evaluate_line(line)
+    re = to_tokenizer_regex([
+        "op" => r"[(+*)]",
+        "num" => r"[0-9]+"])
+
     vals = []
     ops = []
 
-    for token in untokenize.(tokenize(line))
+    for (name, token) in tokenize(line, re)
         if token == "("
             push!(ops, token)
             result = 0
-        elseif !isempty(token) && all(isdigit(c) for c in token)
+        elseif name == "num"
             push!(vals, parse(Int, token))
         elseif token == ")"
             while ops[end] != "("
