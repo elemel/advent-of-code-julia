@@ -1,7 +1,6 @@
 function parse_food(s)
     ingredients_str, allergens_str = split(s[1 : end - 1], " (contains ")
     return split(ingredients_str), split(allergens_str, ", ")
-
 end
 
 function main()
