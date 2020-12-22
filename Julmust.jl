@@ -1,6 +1,8 @@
 # Essential Julia utilities for Advent of Code
 module Julmust
 
+using DataStructures
+
 export
     get_grid_cell,
     GRID_DIRECTIONS,
@@ -9,6 +11,7 @@ export
     max_bipartite_matching,
     sort_by,
     sort_by!,
+    to_deque,
     to_tokenizer_regex,
     tokenize
 
@@ -136,6 +139,16 @@ function max_bipartite_matching(key_to_candidates)
     candidate_to_key = Dict()
     max_bipartite_matching_search(key_to_candidates, candidate_to_key)
     return Dict(key => candidate for (candidate, key) in candidate_to_key)
+end
+
+function to_deque(iterable)
+    deque = Deque{eltype(iterable)}()
+
+    for element in iterable
+        push!(deque, element)
+    end
+
+    return deque
 end
 
 end # module Julmust
