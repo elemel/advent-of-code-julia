@@ -6,6 +6,7 @@ export
     GRID_DIRECTIONS,
     grid_raycast,
     in_grid_bounds,
+    max_bipartite_matching,
     sort_by,
     sort_by!,
     to_tokenizer_regex,
@@ -102,6 +103,39 @@ function tokenize(s, re)
     end
 
     return named_tokens
+end
+
+function max_bipartite_matching_search(key_to_candidates, candidate_to_key)
+    if isempty(key_to_candidates)
+        return true
+    end
+
+    key, candidates = pop!(key_to_candidates)
+
+    for candidate in candidates
+        if haskey(candidate_to_key, candidate)
+            continue
+        end
+
+        candidate_to_key[candidate] = key
+
+        if max_bipartite_matching_search(key_to_candidates, candidate_to_key)
+            return true
+        end
+
+        # Backtrack
+        delete!(candidate_to_key, candidate)
+    end
+
+    # Backtrack
+    push!(key_to_candidates, key => candidates)
+    return false
+end
+
+function max_bipartite_matching(key_to_candidates)
+    candidate_to_key = Dict()
+    max_bipartite_matching_search(key_to_candidates, candidate_to_key)
+    return Dict(key => candidate for (candidate, key) in candidate_to_key)
 end
 
 end # module Julmust

@@ -1,3 +1,7 @@
+include("../../Julmust.jl")
+
+using .Julmust
+
 function parse_food(s)
     ingredients_str, allergens_str = split(s[1 : end - 1], " (contains ")
     return split(ingredients_str), split(allergens_str, ", ")
@@ -28,21 +32,8 @@ function main()
         end
     end
 
-    allergen_to_ingredient = Dict()
-
-    while length(allergen_to_ingredient) < length(all_allergens)
-        for (allergen, ingredients) in allergen_to_candidate_ingredients
-            available_ingredients = [
-                ingredient
-                for ingredient in ingredients
-                    if !in(ingredient, values(allergen_to_ingredient))]
-
-            if length(available_ingredients) == 1
-                allergen_to_ingredient[allergen] = only(available_ingredients)
-            end
-        end
-    end
-
+    allergen_to_ingredient = max_bipartite_matching(
+        allergen_to_candidate_ingredients)
     canonical_dangerous_ingredients = [
         ingredient
         for (allergen, ingredient) in sort(collect(allergen_to_ingredient))]
