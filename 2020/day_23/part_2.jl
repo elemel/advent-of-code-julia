@@ -36,11 +36,10 @@ end
 
 function main()
     input = readlines(stdin)
-    line = input[1]
+    cups = parse.(Int, collect(input[1]))
     max_cup = 1000000
-    cups = parse.(Int, [line[i:i] for i in 1:length(line)])
 
-    for cup in 10 : max_cup
+    for cup in maximum(cups) + 1 : max_cup
         push!(cups, cup)
     end
 

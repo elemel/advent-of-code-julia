@@ -36,8 +36,7 @@ end
 
 function main()
     input = readlines(stdin)
-    line = input[1]
-    cups = parse.(Int, [line[i:i] for i in 1:length(line)])
+    cups = parse.(Int, collect(input[1]))
     max_cup = maximum(cups)
 
     previous_cups = zeros(Int, max_cup)
