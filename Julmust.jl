@@ -11,6 +11,7 @@ export
     max_bipartite_matching,
     sort_by,
     sort_by!,
+    to_circular_deque,
     to_deque,
     to_tokenizer_regex,
     tokenize
@@ -143,6 +144,16 @@ end
 
 function to_deque(iterable)
     deque = Deque{eltype(iterable)}()
+
+    for element in iterable
+        push!(deque, element)
+    end
+
+    return deque
+end
+
+function to_circular_deque(iterable, cap)
+    deque = CircularDeque{eltype(iterable)}(cap)
 
     for element in iterable
         push!(deque, element)
